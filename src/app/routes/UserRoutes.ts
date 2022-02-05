@@ -13,6 +13,9 @@ class UserRoutes {
       .route('/users')
       .get(UserController.list)
       .post(UserController.store);
+    this.router
+      .route('/users/signin')
+      .post(UserController.signIn);
 
     return this.router;
   }

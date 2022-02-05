@@ -3,6 +3,7 @@ import { User } from '@models';
 import { IUserStore } from '@interfaces';
 
 class UserRepository {
+  relations = [];
 
   async list(
     page: number,
@@ -56,6 +57,52 @@ class UserRepository {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  
+  async findOneById(id: number) {
+    const connection: Connection = getConnection();
+    const queryRunner: QueryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
+
+    try {
+      const user = await queryRunner.manager.findOne(User, id, {
+        relations: this.relations,
+      });
+
+      return user;
+    } catch (error) {
+      console.log('UserRepository findOneById error', error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async signIn(email: string, password: string): Promise<number | null> {
+    const user: User = await this.getUserWithPassword({ email });
+
+    const isValid = await user.comparePassword(password);
+
+    if (isValid) return user.id;
+
+    return null;
+  }
+  
+  private async getUserWithPassword(query: object): Promise<User> {
+    const connection: Connection = getConnection();
+    const queryRunner: QueryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
+    // @ts-ignore
+    const user: User = await queryRunner.manager.findOneOrFail(User, query, {
+      select: ['id', 'fullName', 'code', 'email', 'password'],
+    });
+
+    await queryRunner.release();
+
+    return user;
   }
 
 }
