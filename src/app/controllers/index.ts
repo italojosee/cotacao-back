@@ -1,5 +1,7 @@
 import UserController from './UserController';
+import ProductController from './ProductController';
 
 export {
-  UserController
+  UserController,
+  ProductController
 };
