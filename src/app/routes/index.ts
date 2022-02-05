@@ -1,12 +1,12 @@
 import { Application } from 'express';
 
-// import DenunciationRoutes from './DenunciationRoutes';
+import UserRoutes from './UserRoutes';
 
 const API = '/api';
 
 class Routes {
   public setRoutes(app: Application): void {
-    // app.use(API, DenunciationRoutes.getRoutes());
+    app.use(API, UserRoutes.getRoutes());
   }
 }
 

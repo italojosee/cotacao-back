@@ -1,5 +1,5 @@
-// import DenunciationController from './DenunciationController';
+import UserController from './UserController';
 
 export {
-  // DenunciationController
+  UserController
 };

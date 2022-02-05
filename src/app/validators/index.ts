@@ -1,5 +1,5 @@
-// import GroupValidator from './GroupValidator';
+import UserValidator from './UserValidator';
 
 export {
-  // GroupValidator,
+  UserValidator,
 };
