@@ -17,7 +17,7 @@ class UserController {
       
       return res.json(result);
     } catch (error) {
-      console.log('InterestController list error', error);
+      console.log('UserController store error', error);
       return res.status(500).json({ error });
     }
   }
@@ -30,7 +30,7 @@ class UserController {
       
       return res.json(result);
     } catch (error) {
-      console.log('InterestController list error', error);
+      console.log('UserController list error', error);
       return res.status(500).json({ error });
     }
   }
