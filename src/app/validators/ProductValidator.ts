@@ -7,8 +7,6 @@ class ProductValidator{
       name: Yup.string().required(),
       price: Yup.number().required(),
       sku: Yup.string(),
-      
-      
     });
 
     return schema.validate(obj);

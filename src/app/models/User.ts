@@ -3,12 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   BeforeInsert
 } from 'typeorm';
 import { compare, hash } from 'bcrypt';
 
+import { Quotation } from './index';
 @Entity({ name: 'User' })
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -17,13 +19,13 @@ export class User {
   @Column('varchar', {
     name: 'fullName'
   })
-  fullName: string ;
+  fullName: string;
 
   @Column('varchar', {
     name: 'password',
     select: false,
   })
-  password: string ;
+  password: string;
 
   @Column('varchar', {
     name: 'email',
@@ -42,6 +44,9 @@ export class User {
     nullable: true
   })
   avatarUrl?: string;
+
+  @OneToMany(() => Quotation, (quotation) => quotation.responsible, { onDelete: 'CASCADE' })
+  quotations: Quotation[];
 
   @CreateDateColumn({
     name: 'created_at',

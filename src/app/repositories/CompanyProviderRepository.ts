@@ -1,4 +1,4 @@
-import { getConnection, Connection, QueryRunner } from 'typeorm';
+import { getConnection, Connection, QueryRunner, In } from 'typeorm';
 import { CompanyProvider } from '@models';
 import { ICompanyprovider } from '@interfaces';
 
@@ -94,6 +94,25 @@ class CompanyProviderRepository {
     } finally {
       await queryRunner.release();
     }
+  }
+  
+  async validateIds(ids: number[]): Promise<number[]> {
+    const connection: Connection = getConnection();
+    const queryRunner: QueryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
+
+    const companyProdiderIds: number[] = [];
+
+    const interests = await queryRunner.manager.find(CompanyProvider, {
+      where: { id: In(ids) },
+    });
+
+    interests.forEach((interest) => companyProdiderIds.push(interest.id));
+
+    await queryRunner.release();
+
+    return companyProdiderIds;
   }
 }
 

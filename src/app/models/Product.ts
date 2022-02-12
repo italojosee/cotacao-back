@@ -8,6 +8,8 @@ import {
   BeforeInsert
 } from 'typeorm';
 
+import { QuotationProduct } from './index';
+
 @Entity({ name: 'Product' })
 export class Product {
   @PrimaryGeneratedColumn('increment')
@@ -35,6 +37,12 @@ export class Product {
     nullable: true
   })
   image?: string;
+
+
+  @ManyToOne(() => QuotationProduct, (quotationProduct) => quotationProduct.products, {
+    onDelete: 'CASCADE',
+  })
+  quotationProducts?: QuotationProduct[];
 
   @CreateDateColumn({
     name: 'created_at',

@@ -1,6 +1,6 @@
-import { getConnection, Connection, QueryRunner } from 'typeorm';
+import { getConnection, Connection, QueryRunner, In } from 'typeorm';
 import { Product } from '@models';
-import { IProductStore } from '@interfaces';
+import { IProductStore, IProductQuotation } from '@interfaces';
 
 class ProductRepository {
   relations = [];
@@ -16,12 +16,12 @@ class ProductRepository {
 
     try {
       const rows = await queryRunner.manager.find(Product, {
-          order: {
-            createdAt: 'ASC',
-          },
-          take: +itemsPerPage,
-          skip: +page * +itemsPerPage,
-        });
+        order: {
+          createdAt: 'ASC',
+        },
+        take: +itemsPerPage,
+        skip: +page * +itemsPerPage,
+      });
 
       return rows;
     } catch (error) {
@@ -31,7 +31,7 @@ class ProductRepository {
       await queryRunner.release();
     }
   }
-  
+
   async store(
     body: IProductStore
   ): Promise<Product> {
@@ -43,8 +43,8 @@ class ProductRepository {
 
     try {
 
-      const data: Product  = await queryRunner.manager.create(Product, body);
-      
+      const data: Product = await queryRunner.manager.create(Product, body);
+
       await queryRunner.manager.save(data);
 
       await queryRunner.commitTransaction();
@@ -58,7 +58,7 @@ class ProductRepository {
     }
   }
 
-  
+
   async findOneById(id: number) {
     const connection: Connection = getConnection();
     const queryRunner: QueryRunner = connection.createQueryRunner();
@@ -78,6 +78,31 @@ class ProductRepository {
       await queryRunner.release();
     }
   }
+
+  async validateProductQuotationIds(productQuotations: IProductQuotation[]): Promise<IProductQuotation[]> {
+    const connection: Connection = getConnection();
+    const queryRunner: QueryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
+
+    const companyProdiderIds: IProductQuotation[] = [];
+
+    const productIds: number[] = productQuotations.map((pQ) => pQ.id);
+
+    const products = await queryRunner.manager.find(Product, {
+      where: { id: In(productIds) },
+    });
+
+    products.forEach((product) => companyProdiderIds.push({
+      id: product.id,
+      quantity: productQuotations.filter(pQ => pQ.id === product.id)?.[0]?.quantity || 0
+    }));
+
+    await queryRunner.release();
+
+    return companyProdiderIds;
+  }
+
 }
 
 export default new ProductRepository();

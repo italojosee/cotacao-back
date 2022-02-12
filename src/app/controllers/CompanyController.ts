@@ -22,7 +22,7 @@ class CompanyController {
         resultProvider = existProvider;
       }
 
-      const resultAgent = await ProviderAgentRepository.store(agent);
+      const resultAgent = await ProviderAgentRepository.store({ ...agent, companyProvider: resultProvider.id });
 
       return res.json({ provider: resultProvider, agent: resultAgent });
     } catch (error) {

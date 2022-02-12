@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { compare, hash } from 'bcrypt';
 
-import {CompanyProvider} from './index'
+import { CompanyProvider, QuotationProvider } from './index'
 
 @Entity({ name: 'ProviderAgent' })
 export class ProviderAgent {
@@ -20,14 +20,14 @@ export class ProviderAgent {
   @Column('varchar', {
     name: 'fullName'
   })
-  fullName: string ;
+  fullName: string;
 
   @Column('varchar', {
     name: 'password',
     select: false,
     nullable: true
   })
-  password: string ;
+  password: string;
 
   @Column('varchar', {
     name: 'email',
@@ -51,6 +51,11 @@ export class ProviderAgent {
     onDelete: 'CASCADE',
   })
   companyProvider?: number | CompanyProvider;
+
+  @OneToMany(() => QuotationProvider, (quotaitonProvider) => quotaitonProvider.agent, {
+    onDelete: 'CASCADE',
+  })
+  quotationProviders: QuotationProvider[];
 
 
   @CreateDateColumn({

@@ -10,7 +10,7 @@ import {
   BeforeInsert
 } from 'typeorm';
 
-import {ProviderAgent} from './index';
+import {ProviderAgent, QuotationProvider} from './index';
 
 @Entity({ name: 'CompanyProvider' })
 export class CompanyProvider {
@@ -40,6 +40,11 @@ export class CompanyProvider {
   })
   @JoinTable()
   agents?: ProviderAgent[];
+
+  @OneToMany(() => QuotationProvider, (quotationProvider) => quotationProvider.providers, {
+    onDelete: 'CASCADE',
+  })
+  quotationProviders?: QuotationProvider[];
 
   @CreateDateColumn({
     name: 'created_at',
